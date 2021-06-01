@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "704957723483",
+    "project_id": "loaner-c866f",
+    "storage_bucket": "loaner-c866f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:704957723483:android:729fec5216249a87b8207e",
+        "android_client_info": {
+          "package_name": "com.ernest.loaner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "704957723483-oh15dpftp290gb7t14hdq5djpibtpgl7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ernest.loaner",
+            "certificate_hash": "5771960d67e9c9755ae1a32ae3d91b7ddffc5537"
+          }
+        },
+        {
+          "client_id": "704957723483-sbv4rdjqk7oi9pt4t9cgtev06ro0j0dj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6zQtM4FX4I569gBu12yL_82irYhJURwo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "704957723483-sbv4rdjqk7oi9pt4t9cgtev06ro0j0dj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
