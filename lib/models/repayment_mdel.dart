@@ -1,5 +1,7 @@
+import 'package:loaner/helpers/write_read_firestore.dart';
+
 ///A concrete model class for the repayment plan
-class RepaymentModel {
+class RepaymentModel  {
   String? dueDate;
   String? amount;
   String? paymentPosition;
@@ -9,14 +11,17 @@ class RepaymentModel {
       {this.dueDate, this.amount, this.paymentPosition, this.captureTime});
 
   ///method that returns [RepaymentModel] from a map
+
   RepaymentModel.fromMap(Map<String, dynamic> map) {
     this.amount = map[_amount] ?? "";
     this.dueDate = map[_dueDate] ?? "";
     this.paymentPosition = map[_paymentPosition] ?? "";
     this.captureTime = map[dataCaptureTime] ?? "";
+
   }
 
   ///return a map of the fields
+  @override
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {};
     map[_dueDate] = this.dueDate;

@@ -3,18 +3,40 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loaner/models/repayment_mdel.dart';
 import 'package:loaner/screens/active_loan/active_loan_model.dart';
+import 'package:monnify_flutter_sdk/monnify_flutter_sdk.dart';
 import 'package:provider/provider.dart';
 
-class ActiveLoanScreen extends StatelessWidget {
+class ActiveLoanScreen extends StatefulWidget {
   static final route = "active_loan_screen";
+
+  @override
+  _ActiveLoanScreenState createState() => _ActiveLoanScreenState();
+}
+
+class _ActiveLoanScreenState extends State<ActiveLoanScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _initMonnify();
+  }
+
+  ///initialise payment gateway
+  void _initMonnify() async {
+    try {
+      await MonnifyFlutterSdk.initialize(
+          "MK_TEST_NBJXL9GWYU", '1735261285', ApplicationMode.TEST);
+    } catch (error) {}
+  }
 
   @override
   Widget build(BuildContext context) {
     final model = Provider.of<ActiveLoanScreenModel>(context);
+    var future= model.getActiveLoan();
+    
     double top = 0;
     return Scaffold(
         body: FutureBuilder<List<RepaymentModel>?>(
-      future: model.getActiveLoan(),
+      future: future,
       builder: (ctx, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting)
           return CustomScrollView(
@@ -54,7 +76,6 @@ class ActiveLoanScreen extends StatelessWidget {
                   excludeHeaderSemantics: true,
                   expandedHeight: 100,
                   flexibleSpace: LayoutBuilder(builder: (ctx, constraint) {
-                    print("Constraint: $constraint");
                     top = constraint.biggest.height;
                     return FlexibleSpaceBar(
                       collapseMode: CollapseMode.pin,
@@ -84,11 +105,14 @@ class ActiveLoanScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           vertical: 20, horizontal: 7),
                       child: ListTile(
-                        onTap: () {
-                          ///navigate to the to pay
-                        },
+                        onTap: () async =>
+                            await _pay(context, model, data[index].amount!),
                         leading: Text("${data[index].paymentPosition}"),
-                        title: Text("\$${data[index].amount}"),
+                        title: Text(
+                            "\$${double.tryParse(data[index].amount!)!.roundToDouble()}"),
+                        subtitle: model.isLoading
+                            ? CircularProgressIndicator()
+                            : Container(),
                         // subtitle: Text(
                         //     "${DateFormat.yMEd().format(DateTime.parse(data[index].dueDate!))}"),
                         trailing: Text(
@@ -110,6 +134,23 @@ class ActiveLoanScreen extends StatelessWidget {
         );
       },
     ));
+  }
+
+  Future<void> _pay(
+      BuildContext context, ActiveLoanScreenModel model, String amount) async {
+    final scaffold = ScaffoldMessenger.of(context);
+    try {
+      await model.pay(
+        amount: amount,
+      );
+
+      ///show a snack bar
+      scaffold.showSnackBar(
+          const SnackBar(content: Text("Payment was successful")));
+    } catch (error) {
+      //show a snack bar of the error
+      scaffold.showSnackBar(SnackBar(content: Text(error.toString())));
+    }
   }
 
   Widget _customText(String text) {

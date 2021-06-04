@@ -34,6 +34,7 @@ class HomeScreen extends StatelessWidget {
                     ));
                   }
                   if (snapshot.hasError) {
+                    print("Error: ${snapshot.error}");
                     return Text("Error");
                   }
 
@@ -127,7 +128,7 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   UserAccountsDrawerHeader(
                     accountEmail: Text(model.userEmail!),
-                    accountName: Text('Me'),
+                    accountName: Text(model.displayName!),
                   ),
                   ListTile(
                     leading: Icon(Icons.home_rounded),

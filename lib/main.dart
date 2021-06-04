@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:loaner/screens/active_loan/active_loan_model.dart';
+import 'package:loaner/screens/reset_password/reset_password_screen.dart';
+import 'package:loaner/screens/reset_password/reset_password_screen_model.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -18,6 +20,7 @@ import '../screens/settings/settings_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   runApp(MyApp());
 }
 
@@ -46,7 +49,11 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProxyProvider<AuthBase, ActiveLoanScreenModel>(
             create: (_) => ActiveLoanScreenModel(),
-            update: (ctx, auth, model) => ActiveLoanScreenModel(auth: auth))
+            update: (ctx, auth, model) => ActiveLoanScreenModel(auth: auth)),
+        ChangeNotifierProxyProvider<AuthBase, ResetPasswordScreenModel>(
+            create: (context) => ResetPasswordScreenModel(),
+            update: (BuildContext ctx, auth, model) =>
+                ResetPasswordScreenModel(auth: auth))
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -77,10 +84,13 @@ class MyApp extends StatelessWidget {
 
         ///register the different navigation routes/pages for the app
         routes: {
-          HomeScreen.route: (ctx) => HomeScreen(),
-          SettingsScreen.route: (ctx) => SettingsScreen(),
+          HomeScreen.route: (BuildContext ctx) => HomeScreen(),
+          LoginScreen.route: (ctx) => LoginScreen(),
+          SettingsScreen.route: (BuildContext ctx) => SettingsScreen(),
           LoanScreen.route: (BuildContext ctx) => LoanScreen(),
-          ActiveLoanScreen.route: (BuildContext ctx) => ActiveLoanScreen()
+          ActiveLoanScreen.route: (BuildContext ctx) => ActiveLoanScreen(),
+          ResetPasswordScreen.route: (BuildContext context) =>
+              ResetPasswordScreen()
         },
       ),
     );

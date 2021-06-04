@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loaner/screens/reset_password/reset_password_screen.dart';
 import 'package:loaner/widgets/login_form_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -17,10 +18,12 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController? emailController;
   TextEditingController? passwordController;
   TextEditingController? confirmPasswordController;
+  TextEditingController? nameController;
 
   FocusNode? confirmPasswordFocusNode;
   FocusNode? emailFocusNode;
   FocusNode? passwordFocusNode;
+  FocusNode? nameFocusNode;
 
   ///initialise the controllers and focus nodes
   @override
@@ -32,6 +35,8 @@ class _LoginScreenState extends State<LoginScreen> {
     confirmPasswordFocusNode = FocusNode();
     emailFocusNode = FocusNode();
     passwordFocusNode = FocusNode();
+    nameController = TextEditingController();
+    nameFocusNode = FocusNode();
   }
 
   ///dispose off the controllers and focus nodes when no longer needed
@@ -43,6 +48,8 @@ class _LoginScreenState extends State<LoginScreen> {
     passwordController!.dispose();
     confirmPasswordController!.dispose();
     confirmPasswordFocusNode?.dispose();
+    nameFocusNode!.dispose();
+    nameController!.dispose();
 
     super.dispose();
   }
@@ -63,9 +70,14 @@ class _LoginScreenState extends State<LoginScreen> {
               Positioned(
                   child: Container(
                 height: _mediaQuery.height * 0.3,
-                //width: _mediaQuery.width * 0.95,
+                child: Center(
+                  child: Text(
+                    viewModel.displayLabel,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  ),
+                ),
                 decoration: BoxDecoration(
-                  color: Colors.red,
+                  color: Theme.of(context).primaryColorDark,
                 ),
               )),
               Positioned(
@@ -78,10 +90,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   confirmPasswordFocusNode: confirmPasswordFocusNode,
                   emailFocusNode: emailFocusNode,
                   passwordFocusNode: passwordFocusNode,
+                  nameController: nameController,
+                  nameFocusNode: nameFocusNode,
                 ),
               ),
               Positioned(
-                  bottom: _mediaQuery.height * 0.1, child: Text('button'))
+                top: _mediaQuery.height * 0.9,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pushReplacementNamed(ResetPasswordScreen.route);
+                  },
+                  child: Text("forgot password?"),
+                ),
+              )
             ],
           ),
         ),

@@ -12,6 +12,8 @@ class LoginFormWidget extends StatelessWidget {
   final FocusNode? confirmPasswordFocusNode;
   final FocusNode? emailFocusNode;
   final FocusNode? passwordFocusNode;
+  final TextEditingController? nameController;
+  final FocusNode? nameFocusNode;
 
   const LoginFormWidget(
       {Key? key,
@@ -20,7 +22,9 @@ class LoginFormWidget extends StatelessWidget {
       this.confirmPasswordController,
       this.confirmPasswordFocusNode,
       this.emailFocusNode,
-      this.passwordFocusNode})
+      this.passwordFocusNode,
+      this.nameFocusNode,
+      this.nameController})
       : super(key: key);
 
   @override
@@ -73,6 +77,18 @@ class LoginFormWidget extends StatelessWidget {
                                     loginScreenModel.confirmPasswordLabel,
                                 errorText: loginScreenModel
                                     .confirmPasswordErrorMessage,
+                                border: OutlineInputBorder()),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          TextField(
+                            controller: nameController,
+                            focusNode: nameFocusNode,
+                            onChanged: loginScreenModel.updateName,
+                            decoration: InputDecoration(
+                                labelText: loginScreenModel.nameLabel,
+                                errorText: loginScreenModel.nameErrorMessage,
                                 border: OutlineInputBorder()),
                           ),
                         ],

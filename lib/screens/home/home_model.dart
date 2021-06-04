@@ -57,6 +57,7 @@ class HomeScreenModel with ChangeNotifier {
 
   ///get the user id (uid)
   String? get userId => _user!.uid;
+  String? get displayName => _user!.displayName;
 
   ///log out the user
   Future<void> logout() async {

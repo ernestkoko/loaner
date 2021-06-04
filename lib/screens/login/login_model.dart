@@ -13,6 +13,7 @@ class LoginScreenModel with ChangeNotifier {
   SigninFormState formState;
   String email;
   String password;
+  String name;
   String confirmPassword;
   bool isLoading;
   bool submitted;
@@ -24,6 +25,7 @@ class LoginScreenModel with ChangeNotifier {
       this.password = '',
       this.confirmPassword = '',
       this.email = '',
+      this.name = '',
       this.isLoading = false,
       this.submitted = false});
 
@@ -37,6 +39,9 @@ class LoginScreenModel with ChangeNotifier {
   void updateConfirmPassword(String password) =>
       _copyWith(confirmPassword: password);
 
+  ///update name
+  void updateName(String name) => _copyWith(name: name);
+
   ///get the email label
   String get emailLabel => 'Email';
 
@@ -45,6 +50,8 @@ class LoginScreenModel with ChangeNotifier {
 
   ///confirm password text label
   String get confirmPasswordLabel => "Confirm Password";
+
+  String get nameLabel => "Name";
 
   ///email error message
   String? get emailErrorMessage =>
@@ -62,6 +69,10 @@ class LoginScreenModel with ChangeNotifier {
       //   return submitted ? "Passwords do not match":null;
       // }
     }
+  }
+
+  String? get nameErrorMessage {
+    return null;
   }
 
   ///confirm password error message
@@ -89,6 +100,7 @@ class LoginScreenModel with ChangeNotifier {
 
   ///get the string for the toggle button
   String get toggleButtonLabel => _haveAnAccount ? "Register" : "Sign-in";
+  String get displayLabel=> _haveAnAccount?"Log-in": "Registration";
 
   ///private getter that checks the state of the form
   bool get _haveAnAccount => formState == SigninFormState.login ? true : false;
@@ -100,7 +112,7 @@ class LoginScreenModel with ChangeNotifier {
   ///toggle the form state between login and register
   void toggleFormState() {
     //set submitted to false so the error messages disappear
-  _copyWith(submitted: false);
+    _copyWith(submitted: false);
     formState == SigninFormState.login
         ? _copyWith(formState: SigninFormState.register)
         : _copyWith(formState: SigninFormState.login);
@@ -109,45 +121,42 @@ class LoginScreenModel with ChangeNotifier {
   ///[registerOrLoginUser] signs in or registers a new user depending on the state
   ///of the [formState]
   Future<FirebaseUser> registerOrLoginUser() async {
-    FirebaseUser _user;
+    FirebaseUser? _user;
     //set isLoading to true so there can be indicator that it is loading
     //set submitted to true so error message can be displayed
     _copyWith(isLoading: true, submitted: true);
-    //TODO delete later
-    print('Email: $email, Password: $password');
-
-    //check if the TextFields have errors
-    if (formState == SigninFormState.login) {
-      if (emailErrorMessage != null || passwordErrorMessage != null) {
-        //set [isLoading] to false
-        _copyWith(isLoading: false);
-        throw PlatformException(
-            code: 'Login Error', message: "Please fill all fields properly");
-      }
-    } else {
-      if (emailErrorMessage != null ||
-          passwordErrorMessage != null ||
-          confirmPasswordErrorMessage != null) {
-        //set [isLoading] to false
-        _copyWith(isLoading: false);
-        throw PlatformException(
-            code: 'Register Error',
-            message: "Please fill all fields properly");
-      }
-    }
 
     try {
       if (this.formState == SigninFormState.login) {
+        if (emailErrorMessage != null || passwordErrorMessage != null) {
+          //set [isLoading] to false
+          _copyWith(isLoading: false);
+          throw PlatformException(
+              code: 'Login Error', message: "Please fill all fields properly");
+        }
         _user = await authBase!
             .signinUserWithEmailAndPassword(this.email, this.password);
       } else {
+        ///form state is sign up(register)
+        if (emailErrorMessage != null ||
+            passwordErrorMessage != null ||
+            confirmPasswordErrorMessage != null ||
+            nameErrorMessage != null) {
+          //set [isLoading] to false
+          _copyWith(isLoading: false);
+          throw PlatformException(
+              code: 'Register Error',
+              message: "Please fill all fields properly");
+        }
         _user = await authBase!
             .createUserWithEmailAndPassword(this.email, this.password);
+        ///write the name of the user to the firestore
+        await authBase!.updateUserName(name);
       }
       //set [isLoading] to false
       _copyWith(isLoading: false);
 
-      return _user;
+      return _user!;
     } catch (error) {
       //set [isLoading] to false
       _copyWith(isLoading: false);
@@ -161,6 +170,7 @@ class LoginScreenModel with ChangeNotifier {
       String? email,
       String? password,
       String? confirmPassword,
+      String? name,
       bool? isLoading,
       bool? submitted}) {
     //set the values of the class fields to the one of the [_copyWith] method
@@ -169,6 +179,7 @@ class LoginScreenModel with ChangeNotifier {
     this.email = email ?? this.email;
     this.password = password ?? this.password;
     this.confirmPassword = confirmPassword ?? this.confirmPassword;
+    this.name = name ?? this.name;
     this.isLoading = isLoading ?? this.isLoading;
     this.submitted = submitted ?? this.submitted;
     //notify the listener of the change
