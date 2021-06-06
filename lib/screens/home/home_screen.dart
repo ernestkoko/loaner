@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loaner/screens/active_loan/active_loan_screen.dart';
 import 'package:loaner/screens/loan/loan_screen.dart';
 import 'package:loaner/screens/settings/settings_screen.dart';
@@ -128,7 +129,7 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   UserAccountsDrawerHeader(
                     accountEmail: Text(model.userEmail!),
-                    accountName: Text(model.displayName!),
+                    accountName: Text(" ${model.displayName??"Your name"}"),
                   ),
                   ListTile(
                     leading: Icon(Icons.home_rounded),
@@ -192,8 +193,7 @@ class HomeScreen extends StatelessWidget {
     try {
       await model.logout();
     } catch (error) {
-      //TODO delete later
-      print("Logout error: $error");
+      await Fluttertoast.showToast(msg: "An error occurred");
     }
   }
 }

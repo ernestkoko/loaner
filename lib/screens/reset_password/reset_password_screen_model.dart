@@ -5,6 +5,7 @@ class ResetPasswordScreenModel extends ChangeNotifier {
   final AuthBase? auth;
   String password;
   String newPassword;
+  String email;
   bool loading;
   bool submitted;
 
@@ -12,6 +13,7 @@ class ResetPasswordScreenModel extends ChangeNotifier {
       {this.auth,
       this.password = '',
       this.newPassword = '',
+      this.email = '',
       this.loading = false,
       this.submitted = false});
 
@@ -19,7 +21,7 @@ class ResetPasswordScreenModel extends ChangeNotifier {
 
   String get newPasswordLabel => "New password";
 
-  String get confirmPasswordLabel => "Confirm password";
+  String get emailLabel => "Email";
 
   String? get oldPasswordErrorMessage {
     if (submitted && this.password.length < 7) {
@@ -33,25 +35,41 @@ class ResetPasswordScreenModel extends ChangeNotifier {
     _copyWith(password: password);
   }
 
+  ///set the old email
+  set setEmail(String oldEmail) {
+    print("email: $oldEmail");
+    _copyWith(email: oldEmail);
+  }
+
   ///method that gets fired every time the text in new password Text field widget changes
   set setNewPassword(String newPassword) {
     _copyWith(newPassword: newPassword);
   }
 
-  Future  changePassword() async {
+  Future changePassword() async {
+    _copyWith(loading: true);
     try {
       await auth!.updatePassword(
-          newPassword: this.newPassword, oldPassword: this.password);
+          newPassword: this.newPassword,
+          oldPassword: this.password,
+          email: this.email);
     } catch (error) {
       rethrow;
+    } finally {
+      _copyWith(loading: false);
     }
   }
 
   ///method that can change the internal members of [this] class
   void _copyWith(
-      {String? password, String? newPassword, bool? loading, bool? submitted}) {
+      {String? password,
+      String? newPassword,
+      String? email,
+      bool? loading,
+      bool? submitted}) {
     this.password = password ?? this.password;
     this.newPassword = newPassword ?? this.newPassword;
+    this.email = email ?? this.email;
     this.loading = loading ?? this.loading;
     this.submitted = submitted ?? this.submitted;
 

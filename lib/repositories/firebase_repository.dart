@@ -31,7 +31,7 @@ abstract class AuthBase {
 
   Future<List<RepaymentModel>> getActiveLoans();
 
-  Future<void> updatePassword({String? oldPassword, String? newPassword});
+  Future<void> updatePassword({String? oldPassword, String? newPassword, String? email});
 
   Future<MonnifyTransactionResponseDetails> makePayment(
       {double? amount,
@@ -240,11 +240,11 @@ class FirebaseAuthentication extends AuthBase {
 
   @override
   Future<void> updatePassword(
-      {String? oldPassword, String? newPassword}) async {
-    final _user = this.currentUser;
+      {String? oldPassword, String? newPassword, String? email}) async {
+
     try {
       final result =
-          await signinUserWithEmailAndPassword(_user.email!, oldPassword!);
+          await signinUserWithEmailAndPassword(email!, oldPassword!);
 
       ///change the password only iff the user sign-in is successful
       if (result != null) {

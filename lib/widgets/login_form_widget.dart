@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loaner/screens/login/login_model.dart';
 import 'package:loaner/widgets/custom_alert_dialog.dart';
 import 'package:provider/provider.dart';
@@ -15,24 +16,27 @@ class LoginFormWidget extends StatelessWidget {
   final TextEditingController? nameController;
   final FocusNode? nameFocusNode;
 
-  const LoginFormWidget(
-      {Key? key,
-      this.emailController,
-      this.passwordController,
-      this.confirmPasswordController,
-      this.confirmPasswordFocusNode,
-      this.emailFocusNode,
-      this.passwordFocusNode,
-      this.nameFocusNode,
-      this.nameController})
+  const LoginFormWidget({Key? key,
+    this.emailController,
+    this.passwordController,
+    this.confirmPasswordController,
+    this.confirmPasswordFocusNode,
+    this.emailFocusNode,
+    this.passwordFocusNode,
+    this.nameFocusNode,
+    this.nameController})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Consumer<LoginScreenModel>(
-        builder: (cxt, loginScreenModel, child) => SingleChildScrollView(
+        builder: (cxt, loginScreenModel, child) =>
+            SingleChildScrollView(
               child: Container(
-                width: MediaQuery.of(context).size.width * 0.8,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width * 0.8,
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                     color: Colors.greenAccent,
@@ -74,7 +78,7 @@ class LoginFormWidget extends StatelessWidget {
                             onChanged: loginScreenModel.updateConfirmPassword,
                             decoration: InputDecoration(
                                 labelText:
-                                    loginScreenModel.confirmPasswordLabel,
+                                loginScreenModel.confirmPasswordLabel,
                                 errorText: loginScreenModel
                                     .confirmPasswordErrorMessage,
                                 border: OutlineInputBorder()),
@@ -100,7 +104,7 @@ class LoginFormWidget extends StatelessWidget {
                         onPressed: loginScreenModel.isLoading
                             ? null
                             : () async =>
-                                await _signin(loginScreenModel, context),
+                        await _signin(loginScreenModel, context),
                         child: loginScreenModel.isLoading
                             ? CircularProgressIndicator()
                             : Text(loginScreenModel.submitButtonLabel)),
@@ -127,6 +131,9 @@ class LoginFormWidget extends StatelessWidget {
     FocusScope.of(context).unfocus();
     try {
       await model.registerOrLoginUser();
+      await Fluttertoast.showToast(
+          msg: "Registration successful, You can sign in now",
+          toastLength: Toast.LENGTH_LONG, gravity: ToastGravity.CENTER);
 
       ///catch any firebase authentication error
     } on FirebaseAuthException catch (error) {

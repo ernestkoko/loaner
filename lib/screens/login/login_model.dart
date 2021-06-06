@@ -17,6 +17,7 @@ class LoginScreenModel with ChangeNotifier {
   String confirmPassword;
   bool isLoading;
   bool submitted;
+  bool justRegistered;
 
   ///the only class constructor the is expose to external APIs
   LoginScreenModel(
@@ -27,7 +28,8 @@ class LoginScreenModel with ChangeNotifier {
       this.email = '',
       this.name = '',
       this.isLoading = false,
-      this.submitted = false});
+      this.submitted = false,
+      this.justRegistered = false});
 
   ///update email
   void updateEmail(String email) => _copyWith(email: email);
@@ -100,7 +102,8 @@ class LoginScreenModel with ChangeNotifier {
 
   ///get the string for the toggle button
   String get toggleButtonLabel => _haveAnAccount ? "Register" : "Sign-in";
-  String get displayLabel=> _haveAnAccount?"Log-in": "Registration";
+
+  String get displayLabel => _haveAnAccount ? "Log-in" : "Registration";
 
   ///private getter that checks the state of the form
   bool get _haveAnAccount => formState == SigninFormState.login ? true : false;
@@ -150,8 +153,10 @@ class LoginScreenModel with ChangeNotifier {
         }
         _user = await authBase!
             .createUserWithEmailAndPassword(this.email, this.password);
+
         ///write the name of the user to the firestore
-        await authBase!.updateUserName(name);
+        await authBase!.updateUserName(this.name);
+        _copyWith(justReg: true);
       }
       //set [isLoading] to false
       _copyWith(isLoading: false);
@@ -159,9 +164,9 @@ class LoginScreenModel with ChangeNotifier {
       return _user!;
     } catch (error) {
       //set [isLoading] to false
-      _copyWith(isLoading: false);
+      _copyWith(isLoading: false, justReg: false);
       rethrow;
-    } finally {}
+    } finally { _copyWith(isLoading: false, justReg: false);}
   }
 
   ///a private method that can change the field or fields of [this] class
@@ -172,7 +177,8 @@ class LoginScreenModel with ChangeNotifier {
       String? confirmPassword,
       String? name,
       bool? isLoading,
-      bool? submitted}) {
+      bool? submitted,
+      bool? justReg}) {
     //set the values of the class fields to the one of the [_copyWith] method
     //if not null else use the already existing fields values
     this.formState = formState ?? this.formState;
@@ -182,6 +188,7 @@ class LoginScreenModel with ChangeNotifier {
     this.name = name ?? this.name;
     this.isLoading = isLoading ?? this.isLoading;
     this.submitted = submitted ?? this.submitted;
+    this.justRegistered = justReg ?? this.justRegistered;
     //notify the listener of the change
     notifyListeners();
   }

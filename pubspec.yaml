@@ -40,6 +40,7 @@ dependencies:
   #payment gateway
   flutter_paystack: ^1.0.5+1
   monnify_flutter_sdk: ^1.1.0
+  fluttertoast: ^8.0.3
 
 
 dev_dependencies:

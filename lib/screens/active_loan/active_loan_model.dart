@@ -14,7 +14,7 @@ class ActiveLoanScreenModel extends ChangeNotifier {
   ///get the email of the current user
   String? get email => auth!.currentUser.email;
 
-  Future<List<RepaymentModel>?> getActiveLoan() async {
+  Future<List<RepaymentModel>> getActiveLoan() async {
     try {
       final result = await auth!.getActiveLoans();
 
@@ -29,14 +29,14 @@ class ActiveLoanScreenModel extends ChangeNotifier {
       {String? amount,
       String? paymentReference,
       String? paymentDescription}) async {
-    _copyWith(isLoading: true);
+
     try {
       ///parse the String to double
-      final _amount = double.tryParse(amount!);
+      final _amount = double.tryParse(amount!)!.roundToDouble();
       //get the reference string
       final _reference = getRandomString(12);
       //get the name from firestore
-      final _name = await auth!.getName();
+      final _name =  auth!.currentUser.displayName;
       return await auth!.makePayment(
           amount: _amount!,
           customerName: _name,
@@ -46,7 +46,7 @@ class ActiveLoanScreenModel extends ChangeNotifier {
     } catch (error) {
       rethrow;
     } finally {
-      _copyWith(isLoading: false);
+
     }
   }
 

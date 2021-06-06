@@ -31,12 +31,12 @@ class _ActiveLoanScreenState extends State<ActiveLoanScreen> {
   @override
   Widget build(BuildContext context) {
     final model = Provider.of<ActiveLoanScreenModel>(context);
-    var future= model.getActiveLoan();
-    
+
+
     double top = 0;
     return Scaffold(
         body: FutureBuilder<List<RepaymentModel>?>(
-      future: future,
+      future: model.getActiveLoan(),
       builder: (ctx, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting)
           return CustomScrollView(
@@ -105,14 +105,12 @@ class _ActiveLoanScreenState extends State<ActiveLoanScreen> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 20, horizontal: 7),
                       child: ListTile(
+                        ///the method does not fire when [isLoading] is true
                         onTap: () async =>
-                            await _pay(context, model, data[index].amount!),
+                                await _pay(context, model, data[index].amount!),
                         leading: Text("${data[index].paymentPosition}"),
                         title: Text(
                             "\$${double.tryParse(data[index].amount!)!.roundToDouble()}"),
-                        subtitle: model.isLoading
-                            ? CircularProgressIndicator()
-                            : Container(),
                         // subtitle: Text(
                         //     "${DateFormat.yMEd().format(DateTime.parse(data[index].dueDate!))}"),
                         trailing: Text(
