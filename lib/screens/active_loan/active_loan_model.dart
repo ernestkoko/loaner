@@ -29,25 +29,25 @@ class ActiveLoanScreenModel extends ChangeNotifier {
       {String? amount,
       String? paymentReference,
       String? paymentDescription}) async {
-
     try {
       ///parse the String to double
       final _amount = double.tryParse(amount!)!.roundToDouble();
-      //get the reference string
+
+      ///get the reference string
       final _reference = getRandomString(12);
-      //get the name from firestore
-      final _name =  auth!.currentUser.displayName;
-      return await auth!.makePayment(
-          amount: _amount!,
+
+      ///get the name from firestore
+      final _name = auth!.currentUser.displayName;
+      final result = await auth!.makePayment(
+          amount: _amount,
           customerName: _name,
           email: email,
           paymentReference: _reference,
           paymentDescription: 'Loan');
+      return result;
     } catch (error) {
       rethrow;
-    } finally {
-
-    }
+    } finally {}
   }
 
   ///generate random strings of a given [length]

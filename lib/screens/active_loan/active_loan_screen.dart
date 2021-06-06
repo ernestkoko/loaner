@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:loaner/models/repayment_mdel.dart';
-import 'package:loaner/screens/active_loan/active_loan_model.dart';
 import 'package:monnify_flutter_sdk/monnify_flutter_sdk.dart';
 import 'package:provider/provider.dart';
+
+import './active_loan_model.dart';
+import '../../models/repayment_mdel.dart';
 
 class ActiveLoanScreen extends StatefulWidget {
   static final route = "active_loan_screen";
@@ -31,7 +32,6 @@ class _ActiveLoanScreenState extends State<ActiveLoanScreen> {
   @override
   Widget build(BuildContext context) {
     final model = Provider.of<ActiveLoanScreenModel>(context);
-
 
     double top = 0;
     return Scaffold(
@@ -107,7 +107,7 @@ class _ActiveLoanScreenState extends State<ActiveLoanScreen> {
                       child: ListTile(
                         ///the method does not fire when [isLoading] is true
                         onTap: () async =>
-                                await _pay(context, model, data[index].amount!),
+                            await _pay(context, model, data[index].amount!),
                         leading: Text("${data[index].paymentPosition}"),
                         title: Text(
                             "\$${double.tryParse(data[index].amount!)!.roundToDouble()}"),
@@ -157,4 +157,5 @@ class _ActiveLoanScreenState extends State<ActiveLoanScreen> {
       style: TextStyle(fontSize: 12),
     );
   }
+
 }
